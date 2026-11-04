@@ -5,6 +5,7 @@
 
 // disk.S
 .extern read
+.extern read_stage2
 .extern dap
 .extern bootdisk
 
@@ -25,6 +26,7 @@ boot16:
     movw    $0x7C00, %sp
     pushw   $0
     movw    %sp, %bp
+    sti
 
     //  Save boot disk
     movb    %dl, bootdisk
@@ -32,17 +34,12 @@ boot16:
     movw    $0x0003, %ax
     int     $0x10
 
-    movw    $0xB800, %ax
-    movw    %ax, %es
-    xorw    %di, %di
-
-    movb    $'X', %al
-    movb    $0x0F, %ah
-    stosw
+    //  Read stage 2 from disk
+    movl    stage2_lba, %eax
+    movw    stage2_size, %cx
+    call    read_stage2
 
     call halt
-    /*TODO*/
-
     //  Jump to extended boot code
     jmp     stage2_entry
 
@@ -55,4 +52,4 @@ halt:
 .section .patch
 
 stage2_lba:     .long
-stage2_size:    .long
+stage2_size:    .word
