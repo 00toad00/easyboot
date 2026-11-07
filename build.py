@@ -6,6 +6,9 @@ import copy
 build = Build()
 
 compiler = Compiler()
+compiler.AS         = "as"
+compiler.CC         = "clang"
+compiler.CXX        = "clang++"
 compiler.ASFLAGS    = "--64"
 compiler.CFLAGS     = "-O2 -Wall -Wextra -ffreestanding"
 compiler.CXXFLAGS   = "-O2 -Wall -Wextra -ffreestanding"
@@ -33,20 +36,6 @@ target.COMPILER.LDFLAGS = "-T bios/linker/stage-2.ld"
 
 target.SRCDIR   = "bios/src/stage-2/boot"
 target.SRC      = ["entry.S"]
-
-build.addTarget(target)
-
-target = Target()
-target.TARGETNAME   = "installer"
-target.OUT          = "installer"
-target.BUILDDIR     = "build"
-target.COMPILER     = copy.copy(compiler)
-target.COMPILER.LD  = "gcc"
-target.COMPILER.CFLAGS      = "-O2 -Wall -Wextra"
-target.COMPILER.CPPFLAGS    = "-Iinstall/include"
-
-target.SRCDIR   = "install/src"
-target.SRC      = ["main.c"]
 
 build.addTarget(target)
 
