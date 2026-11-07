@@ -22,8 +22,8 @@ read:
 read_stage2:
     movl    %eax, dap.lba
     movl    $0, dap.lba+4
-    movl    $0, dap.off
-    movl    $0x0800, dap.seg
+    movw    $0, dap.off
+    movw    $0x0800, dap.seg
 1:
     jcxz    3f
     movw    %cx, %bx
@@ -35,7 +35,7 @@ read_stage2:
     pushw   %bx
     pushw   %cx
     pushw   $dap
-    popw    %dx
+    call    read
     addw    $2, %sp
     popw    %cx
     popw    %bx
@@ -52,18 +52,18 @@ read_stage2:
 4: 
     ret
 
-.section .bss
+.section .data
 
 .global bootdisk
 .global dap
 
-bootdisk:  .skip 1
+bootdisk:   .byte 0
 
 dap:
-dap.size:   .skip 1
-dap.zero:   .skip 1
-dap.n:      .skip 2
-dap.seg:    .skip 2
-dap.off:    .skip 2
-dap.lba:    .skip 8
+dap.size:   .byte 16
+dap.zero:   .byte 0
+dap.n:      .word 0
+dap.off:    .word 0
+dap.seg:    .word 0
+dap.lba:    .quad 0
     
