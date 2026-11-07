@@ -9,6 +9,9 @@
 .extern dap
 .extern bootdisk
 
+// gdt.S
+.extern gdt_descriptor
+
 .code16
 
 _start:
@@ -56,7 +59,7 @@ _start:
     outb    %al, $0x92
 
     //  GDT + PE
-    lgdt    gdt_ptr
+    lgdt    gdt_descriptor
     movl    %cr0, %eax
     orl     $1, %eax
     movl    %eax, %cr0
@@ -70,32 +73,29 @@ halt16:
 .code32
 
 pm_entry:
+    movw    $0x10, %ax
+    movw    %ax, %ds
+    movw    %ax, %es
+    movw    %ax, %fs
+    movw    %ax, %gs
+    movw    %ax, %ss
+    movl    $0x90000, %esp
+
     movl    $0xB8000, %eax
     movb    $'0', 0(%eax)
     movb    $0x0F, 1(%eax)
 
-    call    halt32
     //  Jump to extended boot code
-    jmp     stage2_entry
+    call    stage2_entry
+    call    halt32
 
 halt32:
     cli
     hlt
     jmp     halt32
 
-.section .data
-
-gdt:
-    .quad   0
-    .quad   0x00CF9A000000FFFF
-    .quad   0x00CF92000000FFFF
-gdt_end:
-gdt_ptr:
-    .word   gdt_end - gdt - 1
-    .long   gdt
-
 //  Filled by installer
-.section .patch
+.section .patch, "a"
 
-stage2_lba:     .long
-stage2_size:    .word
+stage2_lba:     .long 2048
+stage2_size:    .word 1
