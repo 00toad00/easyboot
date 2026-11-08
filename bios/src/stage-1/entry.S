@@ -94,4 +94,4 @@ halt32:
 .section .patch, "a"
 
 stage2_lba:     .long 2048
-stage2_size:    .word 1
+stage2_size:    .word 10
