@@ -7,11 +7,25 @@ build = Build()
 
 compiler = Compiler()
 compiler.AS         = "as"
-compiler.CC         = "clang"
-compiler.CXX        = "clang++"
+compiler.CC         = "gcc"
+compiler.CXX        = "g++"
 compiler.ASFLAGS    = "--32"
-compiler.CFLAGS     = "-O2 -Wall -Wextra -ffreestanding --target=i686-unknown-none-elf -fno-pic -mno-mmx -mno-sse -mno-sse2"
-compiler.CXXFLAGS   = "-O2 -Wall -Wextra -ffreestanding --target=i686-unknown-none-elf -fno-pic -mno-mmx -mno-sse -mno-sse2"
+compiler.CFLAGS     = "-O2 -Wall -Wextra -ffreestanding -m32 -fno-pic -mno-mmx -mno-sse -mno-sse2"
+compiler.CXXFLAGS   = "-O2 -Wall -Wextra -ffreestanding -m32 -fno-pic -mno-mmx -mno-sse -mno-sse2"
+
+target = Target()
+target.TARGETNAME   = "libc"
+target.OUT          = "build/libc.a"
+target.BUILDDIR     = "build"
+target.COMPILER     = copy.copy(compiler)
+target.COMPILER.LD  = ""
+target.COMPILER.AR  = "ar"
+target.COMPILER.ARFLAGS = "rcs"
+
+target.SRCDIR   = "libc/src"
+target.SRC      = ["memory.c"]
+
+build.addTarget(target)
 
 target = Target()
 target.TARGETNAME   = "biosstage1"
