@@ -1,21 +1,26 @@
 #include <stdint.h>
 
+//  libc
+#include <memory.h>
+
+//  Video
 #include <bios/vesa.hpp>
+#include <video/console.hpp>
+#include <video/textconsole.hpp>
 
 extern "C" void main() {
+    Console *Out;
+    TextConsole tcon;
+    Out = &tcon;
+
+    Out->print("Bootloader started successfully\n");
+    Out->print("VESA Initialization...");
+
+    //  Graphics mode initialization
     vbe_info_block vbe_info;
-    vbe_info.signature[0] = 'V'; vbe_info.signature[1] = 'B';
-    vbe_info.signature[2] = 'E'; vbe_info.signature[3] = '2';
+    const char *sig = "VBE2";
+    memcpy(vbe_info.signature, sig, 4);
     bios::vesa::get_controller_info(&vbe_info);
-
-    uint8_t *vga = (uint8_t*)0xB8000;
-
-    const char *str = "Hello World";
-
-    for (int i = 0; str[i] != 0; i++) {
-        vga[i*2] = str[i];
-        vga[i*2+1] = 0x0F;
-    }
 
     while (1);
 }
