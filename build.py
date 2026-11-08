@@ -9,16 +9,16 @@ compiler = Compiler()
 compiler.AS         = "as"
 compiler.CC         = "clang"
 compiler.CXX        = "clang++"
-compiler.ASFLAGS    = "--64"
-compiler.CFLAGS     = "-O2 -Wall -Wextra -ffreestanding"
-compiler.CXXFLAGS   = "-O2 -Wall -Wextra -ffreestanding"
+compiler.ASFLAGS    = "--32"
+compiler.CFLAGS     = "-O2 -Wall -Wextra -ffreestanding --target=i686-unknown-none-elf -fno-pic -mno-mmx -mno-sse -mno-sse2"
+compiler.CXXFLAGS   = "-O2 -Wall -Wextra -ffreestanding --target=i686-unknown-none-elf -fno-pic -mno-mmx -mno-sse -mno-sse2"
 
 target = Target()
 target.TARGETNAME   = "biosstage1"
 target.OUT          = "build/stage-1.bin"
 target.BUILDDIR     = "build"
 target.COMPILER     = copy.copy(compiler)
-target.COMPILER.LDFLAGS = "-T bios/linker/stage-1.ld"
+target.COMPILER.LDFLAGS = "-T bios/linker/stage-1.ld -m elf_i386"
 
 target.SRCDIR   = "bios/src/stage-1"
 target.SRC      = ["entry.S",
@@ -32,10 +32,14 @@ target.TARGETNAME   = "biosstage2"
 target.OUT          = "build/stage-2.bin"
 target.BUILDDIR     = "build"
 target.COMPILER     = copy.copy(compiler)
-target.COMPILER.LDFLAGS = "-T bios/linker/stage-2.ld"
+target.COMPILER.LDFLAGS = "-T bios/linker/stage-2.ld -m elf_i386"
+target.COMPILER.CPPFLAGS = "-Ibios/include"
 
-target.SRCDIR   = "bios/src/stage-2/boot"
-target.SRC      = ["entry.S"]
+target.SRCDIR   = "bios/src/stage-2/"
+target.SRC      = ["boot/entry.S",
+                   "boot/main.cpp",
+                   
+                   "bios/vesa.S"]
 
 build.addTarget(target)
 
