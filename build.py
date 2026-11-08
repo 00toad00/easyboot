@@ -23,7 +23,8 @@ target.COMPILER.AR  = "ar"
 target.COMPILER.ARFLAGS = "rcs"
 
 target.SRCDIR   = "libc/src"
-target.SRC      = ["memory.c"]
+target.SRC      = ["memory.c",
+                   "libc++.S"]
 
 build.addTarget(target)
 
