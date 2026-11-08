@@ -1,17 +1,17 @@
-.section .text
+.section .text.entry
 
 .global _start
+.extern main
 
 .code32
 
 _start:
-    push    %ebp
+    pushl   %ebp
     movl    %esp, %ebp
 
-    movl    $0xB8000, %eax
-    movb    $'1', 0(%eax)
-    movb    $0x0F, 1(%eax) 
+    call    main
 
     movl    %ebp, %esp
     popl    %ebp
     ret
+    
