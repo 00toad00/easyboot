@@ -34,16 +34,9 @@ _start:
     //  Save boot disk
     movb    %dl, bootdisk
 
+    //  Video Mode set to 0x03
     movw    $0x0003, %ax
     int     $0x10
-
-    movw    $0xB800, %ax
-    movw    %ax, %es
-    movw    $0, %di
-
-    movb    $'X', %al
-    movb    $0x0F, %ah
-    stosw
 
     //  Read stage 2 from disk
     movl    stage2_lba, %eax
@@ -73,6 +66,7 @@ halt16:
 .code32
 
 pm_entry:
+    //  Segments with 32bit data descriptor
     movw    $0x10, %ax
     movw    %ax, %ds
     movw    %ax, %es
@@ -81,11 +75,13 @@ pm_entry:
     movw    %ax, %ss
     movl    $0x90000, %esp
 
-    movl    $0xB8000, %eax
-    movb    $'0', 0(%eax)
-    movb    $0x0F, 1(%eax)
+    pushl   %ebp
+    movl    %esp, %ebp
 
     //  Jump to extended boot code
+    xorl    %eax, %eax
+    movb    bootdisk, %al
+    pushl   %eax
     call    stage2_entry
     call    halt32
 
