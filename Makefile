@@ -26,7 +26,8 @@ ARCH_CFLAGS  := -m32 -fno-pic -fno-pie -mno-mmx -mno-sse -mno-sse2 -mno-80387
 CFLAGS       ?= -O2 -g
 CFLAGS       += $(ARCH_CFLAGS) -std=gnu11 -Wall -Wextra \
                 -ffreestanding -fno-builtin -fno-stack-protector \
-                -fno-asynchronous-unwind-tables -fno-unwind-tables
+                -fno-asynchronous-unwind-tables -fno-unwind-tables \
+				-fno-delete-null-pointer-checks --param=min-pagesize=0
 ASFLAGS      += -m32
 CPPFLAGS     +=
 DEPFLAGS      = -MMD -MP -MF $(@:.o=.d) -MT $@
