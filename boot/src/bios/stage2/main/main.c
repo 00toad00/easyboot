@@ -2,6 +2,7 @@
 
 //  libk
 #include <string.h>
+#include <stdlib.h>
 
 //  Video
 #include <video/vesa.h>
@@ -41,10 +42,8 @@ void main() {
     con.glyph.x = 8; con.glyph.y = 13;
     con.pad.x = 1; con.pad.y = 1;
 
-    printf("Hello\nWorld\n%s", &con, "Ted");
-
     //  Boot logo
-    //bootlogo_draw(&fb, bootlogo, 0x0000FF00, 0x00000000);
+    bootlogo_draw(&fb, bootlogo, 0xFFFFFFFF, 0x00000000);
 
     while (1);
 }
