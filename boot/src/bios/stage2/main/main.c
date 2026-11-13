@@ -34,8 +34,17 @@ void main() {
     fb.bpp = vbe_mode.bpp;
     fb.pitch = (vbe_info.version >= 0x0300) ? vbe_mode.lin_bytes_per_scan_line : vbe_mode.bytes_per_scan_line;
 
+    console con;
+    con.fb = &fb;
+    con.border.x = 10; con.border.y = 10;
+    con.pos.x = 0; con.pos.y = 0;
+    con.glyph.x = 8; con.glyph.y = 13;
+    con.pad.x = 1; con.pad.y = 1;
+
+    printf("Hello\nWorld\n%s", &con, "Ted");
+
     //  Boot logo
-    bootlogo_draw(&fb, bootlogo, 0x0000FF00, 0x00000000);
+    //bootlogo_draw(&fb, bootlogo, 0x0000FF00, 0x00000000);
 
     while (1);
 }
