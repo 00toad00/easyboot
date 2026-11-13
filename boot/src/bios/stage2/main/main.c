@@ -5,7 +5,13 @@
 
 //  Video
 #include <video/vesa.h>
+#include <video/framebuffer.h>
 #include <video/console.h>
+#include <video/bootlogo.h>
+
+//  ACPI
+#include <acpi/rsdp.h>
+#include <acpi/xsdp.h>
 
 void main() {
     //  Graphics mode initialization
@@ -21,12 +27,14 @@ void main() {
     edid_parse(&edid_rw, &edid_in);
     vbe_set_mode(edid_in.width, edid_in.height, 32, &vbe_info, &vbe_mode);
 
-    uint32_t *pixel = (uint32_t*)vbe_mode.framebuffer;
-    for (int y = 0; y < 1080; y++) {
-        for (int x = 0; x < 1920; x++) {
-            *(uint32_t*)(vbe_mode.framebuffer + y*edid_in.width*4 + x*(32/8)) = 0x0000FF00;
-        }
-    }
+    framebuffer fb;
+    fb.lfb = (void*)vbe_mode.framebuffer;
+    fb.width = (int)vbe_mode.width;
+    fb.height = (int)vbe_mode.height;
+    fb.bpp = vbe_mode.bpp;
+    fb.pitch = (vbe_info.version >= 0x0300) ? vbe_mode.lin_bytes_per_scan_line : vbe_mode.bytes_per_scan_line;
+
+    bootlogo_draw(&fb, bootlogo, 0xFFFFFFFF, 0x00000000);
 
     while (1);
 }
