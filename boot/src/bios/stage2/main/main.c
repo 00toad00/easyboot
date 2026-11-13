@@ -6,15 +6,15 @@
 //  Video
 #include <video/vesa.h>
 #include <video/framebuffer.h>
-#include <video/console.h>
 #include <video/bootlogo.h>
+#include <video/console.h>
 
 //  ACPI
 #include <acpi/rsdp.h>
 #include <acpi/xsdp.h>
 
 void main() {
-    //  Graphics mode initialization
+    //  Graphics initialization
     vbe_info_block vbe_info;
     vbe_mode_info vbe_mode;
     const char *sig = "VBE2";
@@ -34,7 +34,8 @@ void main() {
     fb.bpp = vbe_mode.bpp;
     fb.pitch = (vbe_info.version >= 0x0300) ? vbe_mode.lin_bytes_per_scan_line : vbe_mode.bytes_per_scan_line;
 
-    bootlogo_draw(&fb, bootlogo, 0xFFFFFFFF, 0x00000000);
+    //  Boot logo
+    bootlogo_draw(&fb, bootlogo, 0x0000FF00, 0x00000000);
 
     while (1);
 }
